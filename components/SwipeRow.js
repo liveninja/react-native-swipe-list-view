@@ -126,8 +126,36 @@ class SwipeRow extends Component {
 			if (this.props.disableRightSwipe && newDX > 0) { newDX = 0; }
 
 
-			if (this.props.stopLeftSwipe && newDX > this.props.stopLeftSwipe) { newDX = this.props.stopLeftSwipe; }
-			if (this.props.stopRightSwipe && newDX < this.props.stopRightSwipe) { newDX = this.props.stopRightSwipe; }
+            if (this.props.stopLeftSwipe && newDX > this.props.stopLeftSwipe/2) { 
+                // Is attempting Long Swipe
+                this.props.longSwipeLeft( newDX )
+
+            } else if (this.props.stopLeftSwipe && newDX > this.props.stopLeftSwipe) { 
+
+                if(this.props.onLongSwipeLeftEnd instanceof Function) {
+
+                    this.props.onLongSwipeLeftEnd()
+
+                }
+
+                newDX = this.props.stopLeftSwipe; 
+
+            }
+
+            if (this.props.stopRightSwipe && newDX < this.props.stopRightSwipe/2) { 
+                // Is attempting Long Swipe
+                this.props.longSwipeRight( newDX )
+            } else if (this.props.stopRightSwipe && newDX < this.props.stopRightSwipe) { 
+
+                if(this.props.onLongSwipeRightEnd instanceof Function) {
+
+                    this.props.onLongSwipeRightEnd()
+
+                }
+
+                newDX = this.props.stopRightSwipe; 
+
+            }
 
 			this._translateX.setValue(newDX);
 
@@ -145,15 +173,43 @@ class SwipeRow extends Component {
 		let toValue = 0;
 		if (this._translateX._value >= 0) {
 			// trying to open right
-			if (this._translateX._value > this.props.leftOpenValue * (this.props.swipeToOpenPercent/100)) {
+            if(this._translateX._value > this.props.leftOpenValue + (this.props.stopLeftSwipe / 2) ) {
+
+                if(this.props.onLongSwipeLeftEnd instanceof Function) {
+
+                    this.props.onLongSwipeLeftEnd()
+
+                } else {
+
+                    toValue = this.props.leftOpenValue;
+                    
+                }
+
+            } else if (this._translateX._value > this.props.leftOpenValue * (this.props.swipeToOpenPercent/100)) {
 				// we're more than halfway
 				toValue = this.props.leftOpenValue;
+
+                this.props.onSwipeEnd()
 			}
 		} else {
 			// trying to open left
-			if (this._translateX._value < this.props.rightOpenValue * (this.props.swipeToOpenPercent/100)) {
+            if(this._translateX._value < this.props.rightOpenValue + (this.props.stopRightSwipe / 2) ) {
+
+                if(this.props.onLongSwipeRightEnd instanceof Function) {
+
+                    this.props.onLongSwipeRightEnd()
+
+                } else {
+
+                    toValue = this.props.rightOpenValue
+
+                }
+
+            } else if (this._translateX._value < this.props.rightOpenValue * (this.props.swipeToOpenPercent/100)) {
 				// we're more than halfway
 				toValue = this.props.rightOpenValue
+
+                this.props.onSwipeEnd()
 			}
 		}
 
@@ -383,6 +439,16 @@ SwipeRow.propTypes = {
 	 * past to trigger the row opening.
 	 */
 	swipeToOpenPercent: PropTypes.number,
+
+    longSwipeLeft: PropTypes.func,
+
+    longSwipeRight: PropTypes.func,
+
+    onLongSwipeLeftEnd: PropTypes.func,
+
+    onLongSwipeRightEnd: PropTypes.func,
+
+    onSwipeEnd: PropTypes.func
 };
 
 SwipeRow.defaultProps = {
@@ -395,7 +461,10 @@ SwipeRow.defaultProps = {
 	preview: false,
 	previewDuration: 300,
 	directionalDistanceChangeThreshold: 2,
-	swipeToOpenPercent: 50
+	swipeToOpenPercent: 50,
+    longSwipeRight: () => {},
+    longSwipeLeft: () => {},
+    onSwipeEnd: () => {}
 };
 
 export default SwipeRow;
