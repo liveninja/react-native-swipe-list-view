@@ -125,17 +125,13 @@ class SwipeRow extends Component {
             if (this.props.disableLeftSwipe  && newDX < 0) { newDX = 0; }
             if (this.props.disableRightSwipe && newDX > 0) { newDX = 0; }
 
-            if(this.props.stopLeftSwipe) {
-
-                newDX = this.props.stopLeftSwipe; 
-
-            }
-
             if (this.props.stopLeftSwipe && newDX > this.props.stopLeftSwipe/2) { 
                 // Is attempting Long Swipe
                 this.props.longSwipeLeft( newDX )
 
-            } else if (this.props.stopLeftSwipe && newDX > this.props.stopLeftSwipe) { 
+            } 
+            
+            if (this.props.stopLeftSwipe && newDX > this.props.stopLeftSwipe) { 
 
                 if(this.props.onLongSwipeLeftEnd instanceof Function) {
 
@@ -143,11 +139,7 @@ class SwipeRow extends Component {
 
                 }
 
-            }
-
-            if(this.props.stopRightSwipe) {
-
-                newDX = this.props.stopRightSwipe; 
+                newDX = this.props.stopLeftSwipe
 
             }
 
@@ -155,13 +147,17 @@ class SwipeRow extends Component {
                 // Is attempting Long Swipe
                 this.props.longSwipeRight( newDX )
 
-            } else if (this.props.stopRightSwipe && newDX < this.props.stopRightSwipe) { 
+            } 
+            
+            if (this.props.stopRightSwipe && newDX < this.props.stopRightSwipe) { 
 
                 if(this.props.onLongSwipeRightEnd instanceof Function) {
 
                     this.props.onLongSwipeRightEnd()
 
                 }
+
+                newDX = this.props.stopRightSwipe
 
             }
 
