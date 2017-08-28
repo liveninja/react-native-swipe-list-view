@@ -30,6 +30,7 @@ class SwipeRow extends Component {
 
     constructor(props) {
         super(props);
+        this.closeRow = this.closeRow.bind(this)
         this.horizontalSwipeGestureBegan = false;
         this.swipeInitialX = null;
         this.parentScrollEnabled = true;
