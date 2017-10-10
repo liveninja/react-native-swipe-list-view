@@ -1,7 +1,7 @@
 'use strict';
 
 import React, { Component } from 'react';
-import PropTypes from 'react-props'
+import PropTypes from 'prop-types'
 import {
     Animated,
     PanResponder,
